@@ -290,7 +290,7 @@ public class BlockDetector extends RailcraftBlockContainer {
         if (tile instanceof TileDetector)
             ((TileDetector) tile).getDetector().onBlockRemoved();
         if (Game.isHost(world) && !player.capabilities.isCreativeMode)
-            dropBlockAsItem(world, pos, WorldPlugin.getBlockState(world, pos), 0);
+            dropBlockAsItem(world, pos, state, 0);
         return world.setBlockToAir(pos);
     }
 

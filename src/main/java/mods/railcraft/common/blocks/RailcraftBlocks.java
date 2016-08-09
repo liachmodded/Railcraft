@@ -93,7 +93,7 @@ public enum RailcraftBlocks implements IRailcraftBlockContainer {
     frame("frame", BlockFrame::new, ItemBlockRailcraft::new),
     glass("glass", BlockStrengthGlass::new, ItemStrengthGlass::new),
     lantern("lantern", BlockLantern::new, ItemMaterial::new),
-    machine_alpha("machine.alpha", () -> new BlockMachine<EnumMachineAlpha>(EnumMachineAlpha.PROXY, true), ItemMachine::new, EnumMachineAlpha.class),
+    machine_alpha("machine.alpha", () -> new BlockMachine<EnumMachineAlpha>(EnumMachineAlpha.PROXY, false), ItemMachine::new, EnumMachineAlpha.class),
     machine_beta("machine.beta", () -> new BlockMachine<EnumMachineBeta>(EnumMachineBeta.PROXY, false), ItemMachine::new, EnumMachineBeta.class),
     machine_gamma("machine.gamma", () -> new BlockMachine<EnumMachineGamma>(EnumMachineGamma.PROXY, false), ItemMachine::new, EnumMachineGamma.class),
     machine_delta("machine.delta", () -> new BlockMachine<EnumMachineDelta>(EnumMachineDelta.PROXY, false), ItemMachine::new, EnumMachineDelta.class),

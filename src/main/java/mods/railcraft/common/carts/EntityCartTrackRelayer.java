@@ -20,6 +20,7 @@ import mods.railcraft.common.util.inventory.InvTools;
 import mods.railcraft.common.util.misc.Game;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -73,7 +74,8 @@ public class EntityCartTrackRelayer extends CartBaseMaintenancePattern {
         if (TrackTools.isRailBlockAt(worldObj, pos.down()))
             pos = pos.down();
 
-        Block block = WorldPlugin.getBlock(worldObj, pos);
+        IBlockState state = WorldPlugin.getBlockState(worldObj, pos);
+        Block block = state.getBlock();
 
         if (TrackTools.isRailBlock(block)) {
             ItemStack trackExist = patternInv.getStackInSlot(SLOT_EXIST);
@@ -100,12 +102,12 @@ public class EntityCartTrackRelayer extends CartBaseMaintenancePattern {
                     if (trackItem.getPlacedBlock() == block) {
                         TileEntity tile = worldObj.getTileEntity(pos);
                         if (trackItem.isPlacedTileEntity(trackExist, tile)) {
-                            BlockRailBase.EnumRailDirection trackShape = removeOldTrack(pos, block);
+                            BlockRailBase.EnumRailDirection trackShape = removeOldTrack(pos, state);
                             placeNewTrack(pos, SLOT_STOCK, trackShape);
                         }
                     }
                 } else if (InvTools.isStackEqualToBlock(trackExist, block)) {
-                    BlockRailBase.EnumRailDirection trackShape = removeOldTrack(pos, block);
+                    BlockRailBase.EnumRailDirection trackShape = removeOldTrack(pos, state);
                     placeNewTrack(pos, SLOT_STOCK, trackShape);
                 }
         }

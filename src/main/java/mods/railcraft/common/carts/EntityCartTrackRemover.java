@@ -78,7 +78,7 @@ public class EntityCartTrackRemover extends CartBaseMaintenance {
             tracksRemoved.add(track);
         else if (!CartToolsAPI.isMinecartAt(worldObj, track, -0.2f)) {
             Block block = WorldPlugin.getBlock(worldObj, track);
-            removeOldTrack(track, block);
+            removeOldTrack(track, WorldPlugin.getBlockState(worldObj, track));
             blink();
             tracksRemoved.add(track);
         }

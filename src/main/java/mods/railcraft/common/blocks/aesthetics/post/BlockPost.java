@@ -166,7 +166,7 @@ public class BlockPost extends BlockPostBase implements IPostConnection {
         player.addStat(StatList.getBlockStats(this));
         player.addExhaustion(0.025F);
         if (Game.isHost(world) && !player.capabilities.isCreativeMode)
-            dropBlockAsItem(world, pos, WorldPlugin.getBlockState(world, pos), 0);
+            dropBlockAsItem(world, pos, state, 0);
         return WorldPlugin.setBlockToAir(world, pos);
     }
 

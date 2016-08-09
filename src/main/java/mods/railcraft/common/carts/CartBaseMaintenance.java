@@ -13,7 +13,6 @@ import mods.railcraft.api.carts.CartToolsAPI;
 import mods.railcraft.api.tracks.TrackToolsAPI;
 import mods.railcraft.common.blocks.tracks.TrackTools;
 import mods.railcraft.common.plugins.forge.DataManagerPlugin;
-import mods.railcraft.common.plugins.forge.WorldPlugin;
 import mods.railcraft.common.util.misc.Game;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
@@ -115,8 +114,8 @@ public abstract class CartBaseMaintenance extends CartBaseContainer {
         return false;
     }
 
-    protected BlockRailBase.EnumRailDirection removeOldTrack(BlockPos pos, Block block) {
-        IBlockState state = WorldPlugin.getBlockState(getEntityWorld(), pos);
+    protected BlockRailBase.EnumRailDirection removeOldTrack(BlockPos pos, IBlockState state) {
+        Block block = state.getBlock();
         List<ItemStack> drops = block.getDrops(worldObj, pos, state, 0);
 
         for (ItemStack stack : drops) {

@@ -16,7 +16,6 @@ import mods.railcraft.common.plugins.color.EnumColor;
 import mods.railcraft.common.plugins.forge.CreativePlugin;
 import mods.railcraft.common.plugins.forge.HarvestPlugin;
 import mods.railcraft.common.plugins.forge.PowerPlugin;
-import mods.railcraft.common.plugins.forge.WorldPlugin;
 import mods.railcraft.common.util.misc.Game;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -179,6 +178,7 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
     //TODO: Do we need to do this anymore?
     @Override
     public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, @Nullable ItemStack stack) {
+        super.harvestBlock(worldIn, player, pos, state, te, stack);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        List<ItemStack> drops = getBlockDroppedSilkTouch(world, pos, world.getBlockState(pos), 0);
+        List<ItemStack> drops = getBlockDroppedSilkTouch(world, pos, state, 0);
         return drops.get(0);
     }
 
@@ -304,7 +304,7 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
     @SuppressWarnings("ConstantConditions")
     @Override
     public TileEntity createNewTileEntity(World var1, int meta) {
-        return null;
+        return proxy.getMetaMap().get(meta).getTileEntity();
     }
 
     @Override
@@ -342,7 +342,7 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
 
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return getMachineType(WorldPlugin.getBlockState(world, pos)).passesLight() ? 0 : 255;
+        return getMachineType(state).passesLight() ? 0 : 255;
     }
 
     @Override
@@ -400,11 +400,11 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos) {
-        return BoundingBoxManager.getCollisionBox(world, pos, getMachineType(world.getBlockState(pos)));
+        return BoundingBoxManager.getCollisionBox(world, pos, getMachineType(state));
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
-        return BoundingBoxManager.getSelectionBox(world, pos, getMachineType(world.getBlockState(pos)));
+        return BoundingBoxManager.getSelectionBox(world, pos, getMachineType(state));
     }
 }
