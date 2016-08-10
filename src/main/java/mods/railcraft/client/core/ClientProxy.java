@@ -57,6 +57,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Level;
 
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -88,20 +89,21 @@ public class ClientProxy extends CommonProxy {
 
                 ParticleSpark.sprite = event.getMap().registerSprite(new ResourceLocation("railcraft:particle/spark"));
 
-                for (RailcraftBlocks blockContainer : RailcraftBlocks.VALUES) {
+                Arrays.stream(RailcraftBlocks.VALUES).filter(RailcraftBlocks::isEnabled).forEach(blockContainer -> {
                     Block block = blockContainer.block();
                     if (block instanceof IRailcraftBlock) {
                         IRailcraftBlock railcraftBlock = (IRailcraftBlock) block;
                         TextureAtlasSheet.unstitchIcons(event.getMap(), railcraftBlock.getBlockTexture(), railcraftBlock.getTextureDimensions());
+                        Game.log(Level.INFO, "Processing {0}", block.getClass());
                         IVariantEnum[] variants = railcraftBlock.getVariants();
-                        if (variants != null) {
-                            for (IVariantEnum variant : variants) {
-                                if (variant instanceof IVariantEnumBlock)
-                                    TextureAtlasSheet.unstitchIcons(event.getMap(), new ResourceLocation(block.getRegistryName() + "." + variant.getResourcePathSuffix()), ((IVariantEnumBlock) variant).getTextureDimensions());
+                        if (variants != null && variants.getClass().getComponentType().isAssignableFrom(IVariantEnumBlock.class)) {
+                            Game.log(Level.INFO, "Processing {0} sub variant", variants.getClass().getComponentType());
+                            for (IVariantEnumBlock variant : (IVariantEnumBlock[]) variants) {
+                                TextureAtlasSheet.unstitchIcons(event.getMap(), new ResourceLocation(block.getRegistryName() + "." + variant.getResourcePathSuffix()), variant.getTextureDimensions());
                             }
                         }
                     }
-                }
+                });
             }
         });
 

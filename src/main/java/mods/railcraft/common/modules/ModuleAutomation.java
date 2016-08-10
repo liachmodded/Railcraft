@@ -36,7 +36,7 @@ public class ModuleAutomation extends RailcraftModulePayload {
                 add(
                         RailcraftBlocks.detector,
                         RailcraftBlocks.generic,
-//                        RailcraftBlocks.machine_alpha,
+                        RailcraftBlocks.machine_alpha,
 //                        RailcraftBlocks.machine_gamma,
 
                         RailcraftItems.boreHeadIron,

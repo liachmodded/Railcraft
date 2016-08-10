@@ -11,16 +11,21 @@ package mods.railcraft.common.blocks.machine;
 
 import mods.railcraft.api.core.IPostConnection;
 import mods.railcraft.common.blocks.IRailcraftBlock;
+import mods.railcraft.common.core.IVariantEnum;
 import mods.railcraft.common.plugins.color.ColorPlugin;
 import mods.railcraft.common.plugins.color.EnumColor;
 import mods.railcraft.common.plugins.forge.CreativePlugin;
 import mods.railcraft.common.plugins.forge.HarvestPlugin;
 import mods.railcraft.common.plugins.forge.PowerPlugin;
+import mods.railcraft.common.plugins.forge.WorldPlugin;
 import mods.railcraft.common.util.misc.Game;
+import mods.railcraft.common.util.misc.MiscTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -57,6 +62,8 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
 
     private final MachineProxy<M> proxy;
     private final BlockStateContainer myBlockState;
+    public static final PropertyDirection FRONT = PropertyDirection.create("front");
+    public static final PropertyBool POWERED = PropertyBool.create("powered");
 
     public BlockMachine(MachineProxy<M> proxy, Boolean opaque) {
         super(Material.ROCK);
@@ -66,8 +73,9 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
         setSoundType(SoundType.STONE);
         setTickRandomly(true);
         this.proxy = proxy;
-        this.myBlockState = new BlockStateContainer(this, proxy.getVariantProperty());
-        setDefaultState(myBlockState.getBaseState().withProperty(proxy.getVariantProperty(), proxy.getMetaMap().get(0)));
+        this.myBlockState = new BlockStateContainer(this, proxy.getVariantProperty(), FRONT, POWERED);
+        setDefaultState(myBlockState.getBaseState().withProperty(proxy.getVariantProperty(), proxy.getMetaMap().get(0))
+                .withProperty(FRONT, EnumFacing.NORTH).withProperty(POWERED, false));
         this.fullBlock = opaque;
 
         setCreativeTab(CreativePlugin.RAILCRAFT_TAB);
@@ -129,6 +137,12 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
     public boolean recolorBlock(World world, BlockPos pos, EnumFacing side, EnumDyeColor color) {
         TileEntity tile = world.getTileEntity(pos);
         return tile instanceof TileMachineBase && ((TileMachineBase) tile).recolourBlock(color);
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends IVariantEnum> getVariantEnum() {
+        return proxy.getVariantClass();
     }
 
     @Override
@@ -256,10 +270,21 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
     }
 
     @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return FULL_BLOCK_AABB;
+    }
+
+    @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        setFront(worldIn, pos, MiscTools.getSideFacingPlayer(pos, placer));
         TileEntity tile = worldIn.getTileEntity(pos);
+
         if (tile instanceof TileMachineBase)
             ((TileMachineBase) tile).onBlockPlacedBy(state, placer, stack);
+    }
+
+    public void setFront(World world, BlockPos pos, EnumFacing front) {
+        WorldPlugin.setBlockState(world, pos, getDefaultState().withProperty(FRONT, front));
     }
 
     @Override
@@ -343,6 +368,14 @@ public class BlockMachine<M extends Enum<M> & IEnumMachine<M>> extends BlockCont
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         return getMachineType(state).passesLight() ? 0 : 255;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntity tileEntity = WorldPlugin.getBlockTile(worldIn, pos);
+        return tileEntity instanceof TileMachineBase
+                ? ((TileMachineBase) tileEntity).getActualState(state, worldIn, pos)
+                : super.getActualState(state, worldIn, pos);
     }
 
     @Override

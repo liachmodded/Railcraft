@@ -25,18 +25,22 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
 public abstract class TileMachineBase extends RailcraftTickingTileEntity {
 
     private boolean checkedBlock;
+    protected EnumSet<EnumFacing> powerSides = EnumSet.noneOf(EnumFacing.class);
 
     public abstract IEnumMachine<?> getMachineType();
 
@@ -184,5 +188,9 @@ public abstract class TileMachineBase extends RailcraftTickingTileEntity {
         if (isSideSolid(side.getOpposite()))
             return ConnectStyle.TWO_THIN;
         return ConnectStyle.NONE;
+    }
+
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return state;
     }
 }

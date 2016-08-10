@@ -12,6 +12,7 @@ import com.google.common.collect.MapMaker;
 import mods.railcraft.api.core.WorldCoordinate;
 import mods.railcraft.api.core.items.IToolCrowbar;
 import mods.railcraft.common.blocks.RailcraftTileEntity;
+import mods.railcraft.common.blocks.machine.BlockMachine;
 import mods.railcraft.common.blocks.machine.TileMachineItem;
 import mods.railcraft.common.blocks.machine.beta.TileSentinel;
 import mods.railcraft.common.carts.ItemCartAnchor;
@@ -44,6 +45,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
@@ -329,6 +331,11 @@ public class TileAnchorWorld extends TileMachineItem implements IAnchor, ISidedI
                 forceChunkLoading(chunkTicket);
             }
         }
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return state.withProperty(BlockMachine.POWERED, powered || needsFuel());
     }
 
     public boolean needsFuel() {

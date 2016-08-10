@@ -8,6 +8,7 @@
  */
 package mods.railcraft.common.blocks.machine.alpha;
 
+import mods.railcraft.common.blocks.machine.BlockMachine;
 import mods.railcraft.common.blocks.machine.TileMachineBase;
 import mods.railcraft.common.plugins.forge.PowerPlugin;
 import mods.railcraft.common.plugins.forge.WorldPlugin;
@@ -21,8 +22,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Random;
 
@@ -58,6 +60,11 @@ public class TileSmoker extends TileMachineBase {
                 EffectManager.instance.chimneyEffect(worldObj, px, py, pz);
             }
         }
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return state.withProperty(BlockMachine.POWERED, powered);
     }
 
     @Override

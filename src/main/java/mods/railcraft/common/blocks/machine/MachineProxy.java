@@ -22,12 +22,14 @@ public class MachineProxy<T extends Enum<T> & IEnumMachine<T>> {
     private final BiMap<Integer, T> metaMap;
     private final List<T> creativeList;
     private final IProperty<T> property;
+    private final Class<? extends IEnumMachine<?>> variantEnum;
 
     public static <T extends Enum<T> & IEnumMachine<T>> MachineProxy<T> create(T[] values, IProperty<T> property, List<T> creativeList) {
         return new MachineProxy<T>(values, property, creativeList);
     }
 
     private MachineProxy(T[] values, IProperty<T> property, List<T> creativeList) {
+        variantEnum = (Class<? extends IEnumMachine<?>>) values.getClass().getComponentType();
         metaMap = CollectionTools.createIndexedLookupTable(values);
         this.creativeList = creativeList;
         this.property = property;
@@ -43,5 +45,9 @@ public class MachineProxy<T extends Enum<T> & IEnumMachine<T>> {
 
     public List<T> getCreativeList() {
         return creativeList;
+    }
+
+    public Class<? extends IEnumMachine<?>> getVariantClass() {
+        return variantEnum;
     }
 }

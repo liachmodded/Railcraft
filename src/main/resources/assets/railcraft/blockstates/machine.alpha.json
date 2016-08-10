@@ -1,0 +1,107 @@
+{
+  "forge_maker": 1,
+  "defaults": {
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [{}],
+    "variant": {
+      "anchor_world": {
+        "model": "block/cube_bottom_top",
+        "textures": {
+          "side": "railcraft:blocks/anchor.world.1",
+          "bottom": "blocks/obsidian"
+        },
+        "submodel" : {
+          "powered": {
+            "true": {
+              "textures": {
+                "top": "railcraft:blocks/anchor.world.0"
+              }
+            },
+            "false": {
+              "textures": {
+                "top": "railcraft:blocks/anchor.world.2"
+              }
+            }
+          }
+        }
+      },
+      "turbine": {
+        "textures": {}
+      },
+      "anchor_personal": {
+        "model": "block/cube_bottom_top",
+        "textures": {
+          "side": "railcraft:blocks/anchor.personal.1",
+          "bottom": "blocks/obsidian"
+        },
+        "submodel" : {
+          "powered": {
+            "true": {
+              "textures": {
+                "top": "railcraft:blocks/anchor.personal.0"
+              }
+            },
+            "false": {
+              "textures": {
+                "top": "railcraft:blocks/anchor.personal.2"
+              }
+            }
+          }
+        }
+      },
+      "steam_oven": {
+        "textures": {}
+      },
+      "anchor_admin": {
+        "textures": {}
+      },
+      "smoker": {
+        "textures": {}
+      },
+      "trade_station": {
+        "textures": {}
+      },
+      "coke_oven": {
+        "textures": {}
+      },
+      "rolling_machine": {
+        "textures": {}
+      },
+      "steam_trap_manual": {
+        "textures": {}
+      },
+      "steam_trap_auto": {
+        "textures": {}
+      },
+      "feed_station": {
+        "textures": {}
+      },
+      "blast_furnace": {
+        "textures": {}
+      },
+      "anchor_passive": {
+        "textures": {}
+      },
+      "tank_water": {
+        "textures": {}
+      },
+      "rock_crusher": {
+        "textures": {}
+      }
+    },
+    "front": {
+      "down": { "x": 90 },
+      "up": { "x": 270 },
+      "north": {},
+      "south": { "y": 180 },
+      "west": { "y": 270 },
+      "east": { "y": 90 }
+    },
+    "powered": {
+      "true": {},
+      "false": {}
+    }
+  }
+}
