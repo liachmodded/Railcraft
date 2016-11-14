@@ -60,6 +60,8 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import java.util.Arrays;
@@ -69,6 +71,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
     @Override
     public World getClientWorld() {
@@ -95,7 +98,7 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(FluidModelRenderer.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new Object() {
             @SubscribeEvent
-            public void textureStitch(TextureStitchEvent.Pre event) {
+            public void textureStitch(TextureStitchEvent.Post event) {
 //                CartContentRendererRedstoneFlux.instance().setRedstoneIcon(event.getMap().registerSprite(new ResourceLocation("railcraft:entities/carts/cart_redstone_flux")));
 //                CartContentRendererRedstoneFlux.instance().setFrameIcon(event.getMap().registerSprite(new ResourceLocation("railcraft:entities/carts/cart_redstone_flux_frame")));
 
