@@ -12,6 +12,8 @@ package mods.railcraft.common.carts;
 import mods.railcraft.api.carts.IItemCart;
 import mods.railcraft.common.blocks.tracks.TrackShapeHelper;
 import mods.railcraft.common.blocks.tracks.TrackTools;
+import mods.railcraft.common.gui.EnumGui;
+import mods.railcraft.common.gui.containers.FactoryContainer;
 import mods.railcraft.common.plugins.forge.LocalizationPlugin;
 import mods.railcraft.common.util.inventory.wrappers.IInventoryObject;
 import mods.railcraft.common.util.misc.Game;
@@ -66,9 +68,7 @@ public abstract class CartBaseContainer extends EntityMinecartContainer implemen
 
     @Override
     public boolean processInitialInteract(@Nonnull EntityPlayer player, @Nullable ItemStack stack, @Nonnull EnumHand hand) {
-        if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, stack, hand))) return true;
-        if (doInteract(player, stack, hand)) return true;
-        return false;
+        return (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, stack, hand))) || doInteract(player, stack, hand);
     }
 
     public boolean doInteract(EntityPlayer player, @Nullable ItemStack stack, @Nullable EnumHand hand) {
@@ -95,10 +95,24 @@ public abstract class CartBaseContainer extends EntityMinecartContainer implemen
         killAndDrop(this);
     }
 
+    /**
+     * {@link net.minecraft.entity.item.EntityArmorStand#IS_RIDEABLE_MINECART}
+     */
     @Nonnull
     @Override
-    public EntityMinecart.Type getType() {
-        return null;
+    public final EntityMinecart.Type getType() {
+        return null; //TODO: Pull request to forge
+//        throw new Error("This should not be called");
+    }
+
+    @Override
+    public boolean isPoweredCart() {
+        return false;
+    }
+
+    @Override
+    public boolean canBeRidden() {
+        return false;
     }
 
     protected void updateTravelDirection(BlockPos pos, IBlockState state) {
@@ -179,12 +193,14 @@ public abstract class CartBaseContainer extends EntityMinecartContainer implemen
         return "railcraft:" + getCartType().getBaseTag();
     }
 
-    // Will this explode?
     @Nonnull
     @Override
     public Container createContainer(@Nonnull InventoryPlayer playerInventory, @Nonnull EntityPlayer playerIn) {
-        return null;
+        return FactoryContainer.build(getGuiType(), playerInventory, this, worldObj, (int) posX, (int) posY, (int) posZ);
     }
+
+    @Nonnull
+    protected abstract EnumGui getGuiType();
 
     @Override
     public int getNumSlots() {
