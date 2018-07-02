@@ -140,7 +140,7 @@ public final class Game {
     public static void logErrorAPI(String mod, Throwable error, Class<?>... classFiles) {
         StringBuilder msg = new StringBuilder(mod);
         msg.append(" API error, please update your mods. Error: ").append(error);
-        logThrowable(Level.ERROR, 2, error, msg.toString());
+        logThrowable(Level.ERROR, 10, error, msg.toString());
 
         for (Class<?> classFile : classFiles) {
             if (classFile != null) {

@@ -1,5 +1,6 @@
 package mods.railcraft.common.blocks.multi;
 
+import mods.railcraft.common.blocks.multi.TileSteamOven.Icon;
 import mods.railcraft.common.items.Metal;
 import mods.railcraft.common.items.RailcraftItems;
 import mods.railcraft.common.plugins.forge.CraftingPlugin;
@@ -13,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -23,11 +25,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public  class BlockSteamOven extends BlockMultiBlockInventory {
 
-    public static final IProperty<EnumFacing> FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-    public static final IProperty<TileSteamOven.Icon> ICON = PropertyEnum.create("icon", TileSteamOven.Icon.class);
+    public static final IProperty<EnumFacing> FACING = PropertyDirection.create("facing", Plane.HORIZONTAL);
+    public static final IProperty<TileSteamOven.Icon> ICON = PropertyEnum.create("icon", Icon.class);
 
     public BlockSteamOven() {
         super(Material.ROCK);
+        setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH).withProperty(ICON, Icon.DEFAULT));
         setHarvestLevel("pickaxe", 1);
     }
 

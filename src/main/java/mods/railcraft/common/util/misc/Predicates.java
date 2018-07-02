@@ -10,12 +10,11 @@
 
 package mods.railcraft.common.util.misc;
 
-import mods.railcraft.common.util.collections.CollectionTools;
 import mods.railcraft.common.util.collections.StackKey;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,11 +24,7 @@ import java.util.function.Predicate;
  *
  * @author CovertJaguar <http://www.railcraft.info>
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class Predicates {
-
-    private static final Predicate ALWAYS_FALSE = t -> false;
-    private static final Predicate ALWAYS_TRUE = t -> true;
+public final class Predicates {
 
     public static <T> Predicate<T> instanceOf(Class<? extends T> clazz) {
         return clazz::isInstance;
@@ -39,21 +34,20 @@ public class Predicates {
         return Predicates.<T>instanceOf(clazz).negate();
     }
 
-    public static <T> Predicate<T> distinct(Function<? super T, Object> keyFunction) {
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyFunction.apply(t), Boolean.TRUE) == null;
+    public static <T> Predicate<T> distinct(Function<? super T, ?> keyFunction) {
+        Set<Object> seen = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        return t -> seen.add(keyFunction.apply(t));
     }
 
     public static Predicate<ItemStack> distinctStack() {
-        Map<StackKey, Boolean> seen = new HashMap<>();
-        return stack -> seen.putIfAbsent(StackKey.make(stack), Boolean.TRUE) == null;
+        return distinct(StackKey::make);
     }
 
     public static <T> Predicate<T> alwaysTrue() {
-        return ALWAYS_TRUE;
+        return t -> true; // This returns the same instance on different method calls
     }
 
     public static <T> Predicate<T> alwaysFalse() {
-        return ALWAYS_FALSE;
+        return t -> false;
     }
 }

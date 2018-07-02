@@ -34,6 +34,7 @@ public class ModuleCharge extends RailcraftModulePayload {
                         RailcraftItems.TURBINE_BLADE,
                         RailcraftItems.TURBINE_DISK,
 //                        RailcraftBlocks.track,
+                        RailcraftBlocks.TURBINE,
                         RailcraftBlocks.CHARGE_FEEDER,
                         RailcraftBlocks.CHARGE_TRAP,
                         RailcraftBlocks.CHARGE_BATTERY,
@@ -60,26 +61,6 @@ public class ModuleCharge extends RailcraftModulePayload {
 //                CraftingPlugin.addShapelessRecipe(rotor, RailcraftPartItems.getTurbineRotor());
 //                }
 
-//                EnumMachineEpsilon epsilon = EnumMachineEpsilon.FORCE_TRACK_EMITTER;
-//                if (epsilon.isAvailable()) {
-//                    CraftingPlugin.addRecipe(epsilon.getStack(),
-//                            "PCP",
-//                            "CDC",
-//                            "PCP",
-//                            'P', RailcraftItems.PLATE.getRecipeObject(Metal.TIN),
-//                            'D', "blockDiamond",
-//                            'C', "ingotCopper");
-//                }
-
-//                epsilon = EnumMachineEpsilon.FLUX_TRANSFORMER;
-//                if (epsilon.isAvailable())
-//                    CraftingPlugin.addRecipe(epsilon.getStack(2),
-//                            "PGP",
-//                            "GRG",
-//                            "PGP",
-//                            'P', RailcraftItems.PLATE.getRecipeObject(Metal.COPPER),
-//                            'G', "ingotGold",
-//                            'R', "blockRedstone");
             }
         });
     }

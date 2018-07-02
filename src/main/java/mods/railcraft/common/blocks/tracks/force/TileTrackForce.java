@@ -16,8 +16,11 @@ import mods.railcraft.common.blocks.single.TileForceTrackEmitter;
 import mods.railcraft.common.util.network.RailcraftInputStream;
 import mods.railcraft.common.util.network.RailcraftOutputStream;
 import net.minecraft.block.BlockRailBase.EnumRailDirection;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -94,5 +97,10 @@ public final class TileTrackForce extends RailcraftTileEntity {
         eastWest = data.getBoolean("eastWest");
         color = data.getInteger("color");
         index = data.getInteger("index");
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return oldState.getBlock() != newSate.getBlock(); // Shape change does NOT matter
     }
 }

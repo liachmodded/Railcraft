@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author CovertJaguar <http://www.railcraft.info>
  */
-public class StackKey {
+public final class StackKey {
 
     private final ItemStack stack;
 
@@ -29,10 +29,10 @@ public class StackKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof StackKey)) {
             return false;
         }
         final StackKey other = (StackKey) obj;

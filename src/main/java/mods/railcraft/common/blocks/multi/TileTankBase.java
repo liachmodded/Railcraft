@@ -576,6 +576,11 @@ public abstract class TileTankBase extends TileMultiBlock<TileTankBase, TileTank
         return isMaster ? pass == 0 : pass == 1;
     }
 
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return oldState.getBlock() != newSate.getBlock(); // Color change does NOT matter
+    }
+
     int getComparatorValue() {
         double fullness = (double) tank.getFluidAmount() / (double) tank.getCapacity();
         return (int) Math.ceil(fullness * 15.0);

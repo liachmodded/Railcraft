@@ -79,10 +79,10 @@ public final class TileSteamOven extends TileMultiBlockOven<TileSteamOven> imple
     static {
         char[][][] map = {
                 {
+                        {'*', '*', '*', '*'},
                         {'*', 'O', 'O', '*'},
-                        {'O', 'O', 'O', 'O'},
-                        {'O', 'O', 'O', 'O'},
                         {'*', 'O', 'O', '*'},
+                        {'*', '*', '*', '*'},
                 },
                 {
                         {'*', 'O', 'O', '*'},
@@ -97,10 +97,10 @@ public final class TileSteamOven extends TileMultiBlockOven<TileSteamOven> imple
                         {'*', 'O', 'O', '*'}
                 },
                 {
+                        {'*', '*', '*', '*'},
                         {'*', 'O', 'O', '*'},
-                        {'O', 'O', 'O', 'O'},
-                        {'O', 'O', 'O', 'O'},
                         {'*', 'O', 'O', '*'},
+                        {'*', '*', '*', '*'},
                 },
         };
         patterns.add(new MultiBlockPattern(map));
@@ -168,7 +168,7 @@ public final class TileSteamOven extends TileMultiBlockOven<TileSteamOven> imple
         super.update();
 
         if (Game.isClient(getWorld())) {
-            if (isMasterCooking())
+            if (isCooking())
                 EffectManager.instance.steamEffect(world, this, +0.25);
             return;
         }

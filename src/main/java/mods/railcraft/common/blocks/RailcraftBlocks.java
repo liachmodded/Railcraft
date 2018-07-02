@@ -61,6 +61,7 @@ import mods.railcraft.common.core.IRailcraftObject;
 import mods.railcraft.common.core.RailcraftConfig;
 import mods.railcraft.common.items.IRailcraftItemSimple;
 import mods.railcraft.common.items.firestone.BlockRitual;
+import mods.railcraft.common.modules.ModuleCharge;
 import mods.railcraft.common.plugins.forge.RailcraftRegistry;
 import mods.railcraft.common.util.inventory.InvTools;
 import net.minecraft.block.Block;
@@ -135,7 +136,11 @@ public enum RailcraftBlocks implements IRailcraftBlockContainer {
     WORLDSPIKE_POINT("worldspike_point", BlockWorldspikePoint.class, BlockWorldspikePoint::new, ItemBlockRailcraft::new),
     // singles
     TRADE_STATION("trade_station", BlockTradeStation.class, BlockTradeStation::new, ItemBlockEntityDelegate::new),
-    FORCE_TRACK_EMITTER("force_track_emitter", BlockForceTrackEmitter.class, BlockForceTrackEmitter::new, ItemForceTrackEmitter::new),
+    FORCE_TRACK_EMITTER("force_track_emitter", BlockForceTrackEmitter.class, BlockForceTrackEmitter::new, ItemForceTrackEmitter::new) {
+        {
+            conditions().add(ModuleCharge.class);
+        }
+    },
     ADMIN_STEAM_PRODUCER("admin_steam_producer", BlockAdminSteamProducer.class, BlockAdminSteamProducer::new, ItemBlockEntityDelegate::new),
     CHEST_METALS("chest_metals", BlockChestMetals.class, BlockChestMetals::new, ItemBlockEntityDelegate::new),
     CHEST_VOID("chest_void", BlockChestVoid.class, BlockChestVoid::new, ItemBlockEntityDelegate::new),
@@ -152,6 +157,7 @@ public enum RailcraftBlocks implements IRailcraftBlockContainer {
     TANK_STEEL_WALL("tank_steel_wall", BlockTankSteelWall.class, BlockTankSteelWall::new, ItemBlockTank::new),
     TANK_WATER("tank_water", BlockTankWater.class, BlockTankWater::new, ItemMultiBlock::new),
     FLUX_TRANSFORMER("flux_transformer", BlockFluxTransformer.class, BlockFluxTransformer::new, ItemMultiBlock::new),
+    TURBINE("turbine", BlockSteamTurbine.class, BlockSteamTurbine::new, ItemSteamTurbine::new),
     // others
     ;
     public static final RailcraftBlocks[] VALUES = values();

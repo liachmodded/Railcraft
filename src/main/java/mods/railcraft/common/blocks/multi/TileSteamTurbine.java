@@ -28,11 +28,15 @@ import mods.railcraft.common.util.inventory.StandaloneInventory;
 import mods.railcraft.common.util.misc.Game;
 import mods.railcraft.common.util.misc.Predicates;
 import mods.railcraft.common.util.steam.ISteamUser;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -41,6 +45,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author CovertJaguar <http://www.railcraft.info>
@@ -48,13 +55,20 @@ import java.util.List;
 //TODO: migrate to new charge API
 public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, TileSteamTurbine> implements IMultiEmitterDelegate, INeedsMaintenance, ISteamUser, ITileTanks {
 
-    enum Texture {
+    //TODO model enums! yooo
+    enum Position implements IStringSerializable {
 
-        END_TL(6), END_TR(7), END_BL(8), END_BR(9), SIDE_A(0), SIDE_B(10), GUAGE(11);
+        END_TOP_LEFT(6), END_TOP_RIGHT(7), END_BOTTOM_LEFT(8), END_BOTTOM_RIGHT(9), REGULAR(10), GAUGE(11);
         private final int index;
+        private final String serializedName = name().toLowerCase(Locale.ROOT);
 
-        Texture(int index) {
+        Position(int index) {
             this.index = index;
+        }
+
+        @Override
+        public String getName() {
+            return serializedName;
         }
     }
 
@@ -62,7 +76,7 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
     private static final int BC_OUTPUT = 72;
     private static final int STEAM_USAGE = 360;
     private static final int WATER_OUTPUT = 4;
-    private static final List<MultiBlockPattern> patterns = new ArrayList<MultiBlockPattern>();
+    private static final List<MultiBlockPattern> patterns = new ArrayList<>();
     private static ItemStack sampleRotor = null;
 
     public static ItemStack getSampleRotor() {
@@ -96,14 +110,14 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
                 },
                 {
                         {'O', 'O', 'O', 'O', 'O'},
-                        {'O', 'B', 'B', 'B', 'O'},
-                        {'O', 'B', 'B', 'B', 'O'},
+                        {'O', 'C', 'C', 'C', 'O'},
+                        {'O', 'C', 'C', 'C', 'O'},
                         {'O', 'O', 'O', 'O', 'O'}
                 },
                 {
                         {'O', 'O', 'O', 'O', 'O'},
-                        {'O', 'B', 'W', 'B', 'O'},
-                        {'O', 'B', 'W', 'B', 'O'},
+                        {'O', 'C', 'W', 'C', 'O'},
+                        {'O', 'C', 'W', 'C', 'O'},
                         {'O', 'O', 'O', 'O', 'O'}
                 },
                 {
@@ -227,7 +241,7 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
 
         TankManager tMan = getTankManager();
         if (!tMan.isEmpty())
-            tMan.push(tileCache, Predicates.instanceOf(TileBoilerFirebox.class), EnumFacing.HORIZONTALS, TANK_WATER, WATER_OUTPUT);
+            tMan.push(tileCache, Predicates.alwaysTrue(), EnumFacing.HORIZONTALS, TANK_WATER, WATER_OUTPUT);
     }
 
     private void addToNet() {
@@ -373,7 +387,33 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
 
     @Override
     public List<? extends TileEntity> getSubTiles() {
-        return getComponents();
+        //TODO This is wrong
+        return components.stream().map(tile -> tile.emitterDelegate).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Override
+    protected boolean isMapPositionValid(BlockPos pos, char mapPos) {
+        IBlockState self = getBlockState();
+        IBlockState other = WorldPlugin.getBlockState(world, pos);
+        switch (mapPos) {
+            case 'O': // Other
+                if (self == other)
+                    return false;
+                break;
+            case 'W': // Window
+            case 'B': // Block
+            case 'C': // Block in another direction
+                if (self != other)
+                    return false;
+                break;
+            case 'A': // Air
+                if (!other.getBlock().isAir(other, world, pos))
+                    return false;
+                break;
+            case '*': // Anything
+                return true;
+        }
+        return true;
     }
 
     public StandaloneInventory getInventory() {
@@ -423,21 +463,29 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
     @Override
     public boolean needsMaintenance() {
         TileSteamTurbine mBlock = getMasterBlock();
-        if (mBlock != null) {
-            ItemStack rotor = mBlock.inv.getStackInSlot(0);
-            if (InvTools.isEmpty(rotor))
-                return true;
-            if (!InvTools.isItemEqual(rotor, getSampleRotor()))
-                return true;
-            if (rotor.getItemDamage() / (double) rotor.getMaxDamage() > 0.75f)
-                return true;
+        if (mBlock == null) {
+            return false;
         }
-        return false;
+        ItemStack rotor = mBlock.inv.getStackInSlot(0);
+        if (InvTools.isEmpty(rotor))
+            return true;
+        if (!InvTools.isItemEqual(rotor, getSampleRotor()))
+            return true;
+        return rotor.getItemDamage() / (double) rotor.getMaxDamage() > 0.75f;
     }
 
     @NotNull
     @Override
     public EnumGui getGui() {
         return EnumGui.TURBINE;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState base) {
+        base = base.withProperty(BlockSteamTurbine.AXIS, getPatternMarker() == 'B' ? Axis.X : Axis.Z);
+
+        //TODO
+
+        return base;
     }
 }

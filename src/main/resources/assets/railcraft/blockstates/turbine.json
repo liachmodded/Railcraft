@@ -1,0 +1,51 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube",
+    "textures": {
+      "end": "railcraft:blocks/turbine_2"
+    }
+  },
+  "variants": {
+    "inventory": [
+      {
+        "transform": "forge:default-block",
+        "model": "railcraft:detector",
+        "textures": {
+          "front": "railcraft:blocks/turbine_6",
+          "side": "railcraft:blocks/turbine_2"
+        }
+      }
+    ],
+    "axis": {
+      "x": {
+        "y": 90
+      },
+      "z": {
+      }
+    },
+    "position": {
+      "end_top_left": {
+
+      },
+      "end_top_right": {
+
+      },
+      "end_bottom_left": {
+
+      },
+      "end_bottom_right": {
+
+      },
+      "regular": {
+        "model": "cube_all",
+        "textures": {
+          "all": "railcraft:blocks/turbine_2"
+        }
+      },
+      "gauge": {
+
+      }
+    }
+  }
+}

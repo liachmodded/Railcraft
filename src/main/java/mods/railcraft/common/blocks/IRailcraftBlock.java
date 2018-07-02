@@ -80,6 +80,11 @@ public interface IRailcraftBlock extends IRailcraftObject<Block> {
         }
     }
 
+    /**
+     * Get the dimension of texture in (row, column) format.
+     *
+     * @return The texture dimension
+     */
     @SideOnly(Side.CLIENT)
     default Tuple<Integer, Integer> getTextureDimensions() {
         return new Tuple<>(1, 1);

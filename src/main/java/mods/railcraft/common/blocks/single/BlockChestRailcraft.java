@@ -12,15 +12,16 @@ import net.minecraft.world.IBlockAccess;
 
 public abstract class BlockChestRailcraft extends BlockEntityDelegate {
 
+    private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.875D, 0.9375D);
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     protected BlockChestRailcraft(Material materialIn) {
         super(materialIn);
     }
 
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-            return new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.875D, 0.9375D);
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return BOUNDING_BOX;
     }
 
     @Override
@@ -33,6 +34,7 @@ public abstract class BlockChestRailcraft extends BlockEntityDelegate {
     public int getMetaFromState(IBlockState state) {
         return 0;
     }
+
     @Override
     @SuppressWarnings("deprecation")
     public int getLightOpacity(IBlockState state) {
