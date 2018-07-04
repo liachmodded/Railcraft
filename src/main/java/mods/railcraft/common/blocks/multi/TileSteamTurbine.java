@@ -9,6 +9,7 @@
  -----------------------------------------------------------------------------*/
 package mods.railcraft.common.blocks.multi;
 
+import com.google.common.collect.ImmutableList;
 import mods.railcraft.common.blocks.machine.interfaces.ITileTanks;
 import mods.railcraft.common.fluids.FluidTools;
 import mods.railcraft.common.fluids.Fluids;
@@ -43,7 +44,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -56,6 +56,10 @@ import java.util.stream.Collectors;
 public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, TileSteamTurbine> implements IMultiEmitterDelegate, INeedsMaintenance, ISteamUser, ITileTanks {
 
     //TODO model enums! yooo
+
+    /**
+     * For the ends, these are how they look from the north side.
+     */
     enum Position implements IStringSerializable {
 
         END_TOP_LEFT(6), END_TOP_RIGHT(7), END_BOTTOM_LEFT(8), END_BOTTOM_RIGHT(9), REGULAR(10), GAUGE(11);
@@ -76,7 +80,7 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
     private static final int BC_OUTPUT = 72;
     private static final int STEAM_USAGE = 360;
     private static final int WATER_OUTPUT = 4;
-    private static final List<MultiBlockPattern> patterns = new ArrayList<>();
+    private static final List<MultiBlockPattern> patterns;
     private static ItemStack sampleRotor = null;
 
     public static ItemStack getSampleRotor() {
@@ -101,65 +105,66 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
 //    private final ChargeHandler chargeHandler = new ChargeHandler(this, IChargeBlock.ConnectType.BLOCK);
 
     static {
-        char[][][] map1 = {
-                {
+        MultiBlockPattern map1 = MultiBlockPattern.builder()
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O', 'O'}
-                },
-                {
+                })
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O', 'O'},
-                        {'O', 'C', 'C', 'C', 'O'},
-                        {'O', 'C', 'C', 'C', 'O'},
+                        {'O', 'B', 'B', 'B', 'O'},
+                        {'O', 'B', 'B', 'B', 'O'},
                         {'O', 'O', 'O', 'O', 'O'}
-                },
-                {
+                })
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O', 'O'},
-                        {'O', 'C', 'W', 'C', 'O'},
-                        {'O', 'C', 'W', 'C', 'O'},
+                        {'O', 'B', 'W', 'B', 'O'},
+                        {'O', 'B', 'W', 'B', 'O'},
                         {'O', 'O', 'O', 'O', 'O'}
-                },
-                {
+                })
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O', 'O'}
-                }
-        };
-        patterns.add(new MultiBlockPattern(map1));
+                })
+                .attachedData(Axis.X)
+                .build();
 
-        char[][][] map2 = {
-                {
+        MultiBlockPattern map2 = MultiBlockPattern.builder()
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'}
-                },
-                {
+                })
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O'},
                         {'O', 'B', 'B', 'O'},
                         {'O', 'B', 'B', 'O'},
                         {'O', 'B', 'B', 'O'},
                         {'O', 'O', 'O', 'O'}
-                },
-                {
+                })
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O'},
                         {'O', 'B', 'B', 'O'},
                         {'O', 'W', 'W', 'O'},
                         {'O', 'B', 'B', 'O'},
                         {'O', 'O', 'O', 'O'}
-                },
-                {
+                })
+                .level(new char[][] {
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'},
                         {'O', 'O', 'O', 'O'}
-                }
-        };
-        patterns.add(new MultiBlockPattern(map2));
+                })
+                .attachedData(Axis.Z)
+                .build();
+        patterns = ImmutableList.of(map1, map2);
     }
 
     public TileSteamTurbine() {
@@ -245,13 +250,14 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
     }
 
     private void addToNet() {
-        if (emitterDelegate == null)
+        if (emitterDelegate == null) {
             try {
                 emitterDelegate = new TileIC2MultiEmitterDelegate(this);
                 IC2Plugin.addTileToNet(emitterDelegate);
             } catch (Throwable error) {
                 Game.logErrorAPI("IndustrialCraft", error);
             }
+        }
     }
 
     private void dropFromNet() {
@@ -333,7 +339,6 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
         super.writeToNBT(data);
         inv.writeToNBT("rotor", data);
         tankManager.writeTanksToNBT(data);
-//        chargeHandler.writeToNBT(data);
         data.setFloat("energy", (float) energy);
         data.setFloat("output", output);
         return data;
@@ -344,7 +349,6 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
         super.readFromNBT(data);
         inv.readFromNBT("rotor", data);
         tankManager.readTanksFromNBT(data);
-//        chargeHandler.readFromNBT(data);
         energy = data.getFloat("energy");
         output = data.getFloat("output");
     }
@@ -387,7 +391,6 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
 
     @Override
     public List<? extends TileEntity> getSubTiles() {
-        //TODO This is wrong
         return components.stream().map(tile -> tile.emitterDelegate).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
@@ -402,7 +405,6 @@ public final class TileSteamTurbine extends TileMultiBlock<TileSteamTurbine, Til
                 break;
             case 'W': // Window
             case 'B': // Block
-            case 'C': // Block in another direction
                 if (self != other)
                     return false;
                 break;

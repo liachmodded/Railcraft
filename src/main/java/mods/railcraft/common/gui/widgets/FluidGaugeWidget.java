@@ -12,6 +12,7 @@ package mods.railcraft.common.gui.widgets;
 import mods.railcraft.client.gui.GuiContainerRailcraft;
 import mods.railcraft.client.render.tools.FluidRenderer;
 import mods.railcraft.client.render.tools.OpenGL;
+import mods.railcraft.client.render.tools.RenderTools;
 import mods.railcraft.common.fluids.Fluids;
 import mods.railcraft.common.fluids.tanks.StandardTank;
 import mods.railcraft.common.gui.tooltips.ToolTip;
@@ -68,6 +69,7 @@ public class FluidGaugeWidget extends Widget {
     }
 
     //TODO: test render
+    @SideOnly(Side.CLIENT)
     @Override
     public void draw(GuiContainerRailcraft gui, int guiX, int guiY, int mouseX, int mouseY) {
         if (tank == null)
@@ -78,7 +80,7 @@ public class FluidGaugeWidget extends Widget {
             return;
 
         TextureAtlasSprite fluidIcon = FluidRenderer.getFluidTexture(fluidStack, FluidRenderer.FlowState.STILL);
-        if (fluidIcon == null)
+        if (fluidIcon == RenderTools.getMissingTexture())
             return;
 
         float scale = Math.min(fluidStack.amount, tank.getCapacity()) / (float) tank.getCapacity();

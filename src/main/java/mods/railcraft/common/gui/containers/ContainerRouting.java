@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerRouting extends RailcraftContainer {
 
-    private final IRouter router;
+    final IRouter router;
     private final InventoryPlayer playerInv;
     private int lastLockState;
     private int lastRoutingState;

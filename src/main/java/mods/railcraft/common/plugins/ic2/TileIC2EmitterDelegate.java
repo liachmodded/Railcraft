@@ -18,7 +18,7 @@ import net.minecraft.util.EnumFacing;
  */
 public class TileIC2EmitterDelegate extends TileIC2Delegate implements IEnergySource {
 
-    private final IEmitterDelegate delegate;
+    protected final IEmitterDelegate delegate;
 
     public TileIC2EmitterDelegate(IEmitterDelegate delegate) {
         super(delegate.getTile());

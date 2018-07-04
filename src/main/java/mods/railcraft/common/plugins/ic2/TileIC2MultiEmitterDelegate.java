@@ -20,11 +20,8 @@ import java.util.stream.Collectors;
  * @author CovertJaguar <http://www.railcraft.info/>
  */
 public class TileIC2MultiEmitterDelegate extends TileIC2EmitterDelegate implements IMetaDelegate {
-    private final List<IEnergyTile> subTiles;
-
     public TileIC2MultiEmitterDelegate(IMultiEmitterDelegate delegate) {
         super(delegate);
-        subTiles = delegate.getSubTiles().stream().map(IEnergyTile.class::cast).collect(Collectors.toList());
     }
 
     @Override
@@ -32,9 +29,15 @@ public class TileIC2MultiEmitterDelegate extends TileIC2EmitterDelegate implemen
         return true;
     }
 
+    /**
+     * Note: This must be retrieved at time instead of cached because the delegate may be wrong when it is
+     * calculated too early.
+     *
+     * @return The energy sub tiles
+     */
     @Override
     public List<IEnergyTile> getSubTiles() {
-        return subTiles;
+        return ((IMultiEmitterDelegate) delegate).getSubTiles().stream().map(IEnergyTile.class::cast).collect(Collectors.toList());
     }
 
 }
